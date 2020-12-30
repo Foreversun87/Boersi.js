@@ -1,0 +1,292 @@
+/* 
+        Rooteinstellungen
+*/
+
+:root {
+    --background-white: #f3f3f3;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font: 62.5% helvetica, arial
+}
+
+body {
+    height: 100vh;
+    margin: 0;
+    font-size: 1.6rem;
+}
+
+#root {
+    height: 100%;
+}
+
+.grid-container {
+    min-width: 20rem;
+    display: grid;
+    height: 100%;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(12, 1fr);
+    background-color: var(--background-white);
+}
+
+/* 
+    Navbar
+*/
+
+.navbar {
+    grid-column: 1 / -1;
+    grid-row: 1 / 2;
+    padding: 1.1rem 2rem;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid lightgray;
+}
+
+.navbar-brand {
+    display: inherit;
+    flex: 1;
+    font-size: 3rem;
+    color: red;
+}
+
+.navbar-brand:hover {
+    cursor: pointer;
+}
+
+.navbar-searchbar {
+    flex: 1;
+    padding-left: 3rem;
+    padding-right: 2rem;
+}
+
+.navbar label {
+    display: flex;
+}
+
+.navbar input {
+    flex: 1;
+    line-height: 2.5rem;
+    padding: 0.5rem;
+}
+
+.navbar button {
+    padding: 0.5rem
+}
+
+.navbar-login div:hover{
+    cursor: pointer;
+}
+
+.sidebar {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+}
+
+.sidebar-links {
+    display: flex;
+    justify-content: center;
+    padding-top: 1rem;
+}
+
+.sidebar-links-link {
+    max-height: 40px;
+    min-height: 40px;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    margin: 0rem 1rem;
+    padding-left: 1rem;
+}
+
+.sidebar-links-link a {
+    text-decoration: none;
+    color: black;
+    font-style: italic;
+}
+
+.sidebar-links-link:hover {
+    background-color: rgba(33, 33, 33, 0.1);
+    cursor: pointer;
+}
+
+.sidebar-brandwrapper {
+    background: white;
+    display: flex;
+    flex-direction: column;
+    min-width: 240px;
+    position: relative;
+    z-index: 1;
+}
+
+.sidebar-brand {
+    padding-bottom: 1.2rem;
+    padding-top: 1.2rem;
+    padding-left: 2rem;
+    font-size: 3rem;
+    color: red;
+    border-bottom: 2px solid lightgray;
+}
+
+.sidebar-brand-span:hover {
+    cursor: pointer;
+}
+
+.sidebar-overlay {
+    background-color: rgba(33, 33, 33, 0.4);
+    width: 100%;
+    flex: 10;
+}
+
+.sidebar-newtrade{
+    height: 100%;
+    max-height: 90%;
+}
+
+/* 
+    SelectOption
+*/
+
+.css-2613qy-menu{
+    position: absolute !important;
+    z-index: 9999000000 !important;
+    background-color: red !important;
+}                
+
+
+
+/* 
+    WYSIWYG
+*/
+.editor{
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.public-DraftStyleDefault-ltr:last-of-type{
+    margin-bottom: 0;
+} 
+
+.public-DraftStyleDefault-ltr:first-of-type{
+    margin-top: 0;
+} 
+
+.DraftEditor-root{
+    background-color: white;
+    padding: 1rem;
+}
+
+.editorClassName{
+
+}
+
+.toolbarClassName{
+    position: sticky;
+    z-index: 10;
+    top: 0;
+}
+
+
+/* 
+    main 
+*/
+
+.main {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-row: 2 / -1;
+    margin: 2rem;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas: "open open content content content" "actions actions content content content";
+    min-width: 320px;
+}
+
+.main-opentrades {
+    grid-area: open;
+    display: flex;
+    overflow-y: auto;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--background-white);
+    /* box-shadow: 10px 10px 10px lightblue;
+    border: 1px solid lightblue;
+    border-radius: 10px; */
+}
+
+.main-opentrades-header {
+    position: sticky;
+    z-index: 0;
+    top: 0px;
+    background-color: var(--background-white);
+    border-bottom: 2px solid lightgrey;
+    margin-top: .5rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    width: 100%;
+}
+
+.main-opentrades-header h1:hover {
+    border-bottom: 2px solid grey;
+    color: grey;
+}
+
+.main-opentrades-header input {
+    flex: 2;
+    margin-left: 5rem;
+}
+
+.main-opentrades-content {
+    align-self: flex-start;
+    width: 100%;
+}
+
+.main-opentrades-content-trade {
+    background-color: white;
+    display: flex;
+    border: 1px solid lightgrey;
+    padding: 1rem;
+    margin: 0.8rem;
+    box-shadow: 7px 7px 7px lightblue;
+}
+
+.main-opentrades-content-trade-select {
+    flex: 1;
+}
+
+.main-opentrades-content-trade-text {
+    flex: 5;
+}
+
+.main-strategie {
+    grid-area: actions;
+}
+
+.main-content {
+    grid-area: content;
+}
+
+/* 
+    Modal - Strategie
+*/
+
+.modal-strategie-container{
+    height: 100%;
+    max-height: 100%;
+}
+
+
+
+@media only screen and (max-width: 1100px) {
+    .main {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        grid-template-areas: "open" "actions" "content";
+    }
+}

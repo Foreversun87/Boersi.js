@@ -1,23 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Main from "./Main";
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
+import { useOpenTrade } from "./context/OpenTradeContext";
+import ModalCreatedTrade from "./components/modal/openTrade/ModalOpenTrade";
+import ModalStrategieTrade from "./components/modal/strategieTrade/ModalStrategieTrade";
+import { SearchbarProvider } from "./context/SearchbarContext";
+
 
 function App() {
+  const { state: { isSidebarShow } } = useOpenTrade();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="grid-container" >
+      <ModalCreatedTrade />
+      <ModalStrategieTrade />
+      {isSidebarShow && <Sidebar />}
+      <SearchbarProvider>
+        <Navbar />
+        <Main />
+      </SearchbarProvider>
     </div>
   );
 }
