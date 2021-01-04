@@ -4,17 +4,25 @@ import App from './App';
 import "./style.css";
 import { OpenTradeProvider } from "./context/OpenTradeContext";
 import { StrategieTradeProvider } from "./context/StrategieTradeContext";
+import { GoMarketTradeProvider } from "./context/GoMarketTradeContext";
 import { LoginProvider } from "./context/LoginContext";
-
+import { ClosedTradeProvider } from './context/ClosedTradeContext';
+import { SearchbarProvider } from "./context/SearchbarContext";
 
 ReactDOM.render(
-  <OpenTradeProvider>
-    <StrategieTradeProvider>
-      <LoginProvider>
-        <App />
-      </LoginProvider>
-    </StrategieTradeProvider>
-  </OpenTradeProvider>
+  <LoginProvider>
+    <OpenTradeProvider>
+      <StrategieTradeProvider>
+        <GoMarketTradeProvider>
+          <ClosedTradeProvider>
+            <SearchbarProvider>
+              <App />
+            </SearchbarProvider>
+          </ClosedTradeProvider>
+        </GoMarketTradeProvider>
+      </StrategieTradeProvider>
+    </OpenTradeProvider>
+  </LoginProvider>
   ,
   document.getElementById('root')
 );

@@ -19,8 +19,9 @@ export default function MainOpenTrades() {
             dispatch({ type: ACTION.GETUPDATETRADE, payload: trade })
             showModalCreatedNewTrade();
         }
+
         if (evt.target.value === "STRATEGIE") {
-            dispatch_strategie({type: ACTION.SETSTRATEGIETRADE, payload: trade})  
+            dispatch_strategie({ type: ACTION.SETSTRATEGIETRADE, payload: trade })
             showModalStrategieNewTrade();
         }
     }
@@ -37,7 +38,7 @@ export default function MainOpenTrades() {
                         openTrades.map((trade, i) =>
                             <div key={i} className="main-opentrades-content-trade">
                                 <div className="main-opentrades-content-trade-text">
-                                    {trade.id}: {trade.aktie.label} - {formatDate(trade.created_at)}, Update:{trade.updated_at}
+                                    {trade.id}: {trade.aktie.label} - {formatDate(trade.created_at)}
                                 </div>
                                 <select
                                     value=""

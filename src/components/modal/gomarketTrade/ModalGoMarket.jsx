@@ -3,39 +3,46 @@ import { useStrategieTrade } from "../../../context/StrategieTradeContext";
 import Modal from "react-modal";
 import { customStyles } from "../modal-style";
 import WYSIWYG from '../../WYSIWYG';
-import Draft from "../../Draft.jsx";
 import { useLogin } from '../../../context/LoginContext';
 import { ACTION } from '../../../reducer/action';
 import { calculations } from "../../../helper/strategieMath";
+import { useGoMarketTrade } from '../../../context/GoMarketTradeContext';
 
 Modal.setAppElement("#root");
 
-export default function ModalStrategieTrade() {
+export default function ModalGoMarketTrade() {
     const [editorState, setEditorState] = React.useState(null);
-    const { state: { depot }, dispatch_login } = useLogin();
-    const { state: { isStrategieTrade, strategieTrade }, updateTrade, showModalStrategieNewTrade, dispatch_strategie } = useStrategieTrade();
     const [input, setInput] = React.useState({ einkaufskurs: "", stoppkurs: "", zielkurs: "" });
+    const [trailingDate, setTrailingDate] = React.useState("");
     const [calc, setCalc] = React.useState(null)
+    const { state: { depot } } = useLogin();
+    const { updateTrade } = useStrategieTrade();
+    const { state: { isGoMarketTrade, goMarketTrade }, showModalGoMarketNewTrade, dispatch_gomarket } = useGoMarketTrade();
 
 
     React.useEffect(() => {
-        if (strategieTrade) {
-            setEditorState(JSON.parse(strategieTrade.description));
-            if (strategieTrade.einkaufskurs) {
-                setInput(prevInput => { return { ...prevInput, einkaufskurs: strategieTrade.einkaufskurs } })
+        if (goMarketTrade) {
+            setEditorState(JSON.parse(goMarketTrade.description));
+            if (goMarketTrade.einkaufskurs) {
+                setInput(prevInput => { return { ...prevInput, einkaufskurs: goMarketTrade.einkaufskurs } })
             }
 
-            if (strategieTrade.stoppkurs) {
-                setInput(prevInput => { return { ...prevInput, stoppkurs: strategieTrade.stoppkurs } })
+            if (goMarketTrade.stoppkurs) {
+                setInput(prevInput => { return { ...prevInput, stoppkurs: goMarketTrade.stoppkurs } })
             }
 
-            if (strategieTrade.zielkurs) {
-                setInput(prevInput => { return { ...prevInput, zielkurs: strategieTrade.zielkurs } })
+            if (goMarketTrade.zielkurs) {
+                setInput(prevInput => { return { ...prevInput, zielkurs: goMarketTrade.zielkurs } })
+            }
+            if (goMarketTrade.trailing_stop_datum) {
+
+                let datum = goMarketTrade.trailing_stop_datum.split("T")[0];
+                setTrailingDate(datum)
             }
 
-            console.log(strategieTrade)
+            console.log(goMarketTrade)
         }
-    }, [strategieTrade]);
+    }, [goMarketTrade]);
 
     React.useEffect(() => {
         if (depot) {
@@ -45,19 +52,17 @@ export default function ModalStrategieTrade() {
     }, [input]);
 
     // Wenn ich OK klicke, passiert diese Funktion
-    function onSubmit(event, strategieTrade, input, calc) {
+    function onSubmit(event, goMarketTrade, input, calc, trailingDate) {
         event.preventDefault();
         if (input.einkaufskurs === "" || input.stoppkurs === "" || input.zielkurs === "") {
-            if (input.einkaufskurs === "") {
-                alert("Bitte einen Einkaufskurs eingeben");
-            } else if (input.stoppkurs === "") {
+            if (input.stoppkurs === "") {
                 alert("Bitte einen Stoppkurs eingeben");
             } else if (input.zielkurs === "") {
                 alert("Bitte einen Zielkurs eingeben");
             }
         } else {
             try {
-                updateTrade(editorState, strategieTrade, input, calc);
+                updateTrade(editorState, goMarketTrade, input, calc, trailingDate);
             } catch (err) {
                 // In catch-Block springt er nicht rein!!!
                 alert("catch in ModalStrategieTrade")
@@ -68,27 +73,26 @@ export default function ModalStrategieTrade() {
     }
 
     function cancel() {
-        showModalStrategieNewTrade();
-        dispatch_strategie({ type: ACTION.SETSTRATEGIETRADE, payload: null });
-        setCalc(null);
-        setInput({ einkaufskurs: "", stoppkurs: "", zielkurs: "" });
+        showModalGoMarketNewTrade();
+        setTrailingDate("");
+        dispatch_gomarket({ type: ACTION.SETGOMARKETTRADE, payload: null });
     }
 
     return (
-        <Modal shouldCloseOnEsc={true} onRequestClose={cancel} style={customStyles} isOpen={isStrategieTrade} >
+        <Modal shouldCloseOnEsc={true} onRequestClose={cancel} style={customStyles} isOpen={isGoMarketTrade} >
             <div className={"modal-strategie-container"}>
                 <div style={{ padding: "1rem 0", display: "flex" }}>
                     <span style={{ flex: 1 }}>
                         <div><b>ID</b></div>
-                        {strategieTrade ? <div>{strategieTrade.id}</div> : <div>-</div>}
+                        {goMarketTrade ? <div>{goMarketTrade.id}</div> : <div>-</div>}
                     </span>
                     <span style={{ flex: 1 }}>
                         <div><b>Status</b></div>
-                        {strategieTrade ? <div>{strategieTrade.status.bezeichnung}</div> : <div>-</div>}
+                        {goMarketTrade ? <div>{goMarketTrade.status.bezeichnung}</div> : <div>-</div>}
                     </span>
                     <span style={{ flex: 1 }}>
                         <div><b>Wertpapier</b></div>
-                        {strategieTrade ? <div>{strategieTrade.aktie.label}</div> : <div>-</div>}
+                        {goMarketTrade ? <div>{goMarketTrade.aktie.label}</div> : <div>-</div>}
                     </span>
                     <span style={{ flex: 1 }}>
                         <div><b>Risiko in %</b></div>
@@ -111,12 +115,13 @@ export default function ModalStrategieTrade() {
                     <WYSIWYG editorState={editorState} setEditorState={setEditorState} />
                     {/* <Draft /> */}
                 </div>
-                <form onSubmit={(event) => onSubmit(event, strategieTrade, input, calc)} style={{ padding: "1rem 0" }}>
+                <form onSubmit={(event) => onSubmit(event, goMarketTrade, input, calc, trailingDate)} style={{ padding: "1rem 0" }}>
                     <div>
                         <div>
-                            <input onChange={(e) => setInput({ ...input, einkaufskurs: Number.parseFloat(e.target.value) })} type="number" name="einkaufskurs" step="0.01" value={input.einkaufskurs} placeholder="Einkaufskurs" />
+                            <input disabled onChange={(e) => setInput({ ...input, einkaufskurs: Number.parseFloat(e.target.value) })} type="number" name="einkaufskurs" step="0.01" value={input.einkaufskurs} placeholder="Einkaufskurs" />
                             <input onChange={(e) => setInput({ ...input, stoppkurs: Number.parseFloat(e.target.value) })} type="number" name="stoppkurs" step="0.01" value={input.stoppkurs} placeholder="Stoppkurs" />
                             <input onChange={(e) => setInput({ ...input, zielkurs: Number.parseFloat(e.target.value) })} type="number" name="zielkurs" step="0.01" value={input.zielkurs} placeholder="Zielkurs" />
+                            <input type="date" required onChange={(e) => setTrailingDate(e.target.value)} value={trailingDate} /><span>Traillingdatum</span>
                         </div>
                         <div style={{ display: "flex", width: "30%" }} >
 

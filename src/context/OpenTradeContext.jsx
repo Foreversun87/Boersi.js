@@ -2,6 +2,7 @@ import React from "react";
 import { ACTION } from "../reducer/action";
 import axios from "axios";
 import { opentrade_reducer } from "../reducer/opentrade/opentrade_reducer";
+import { useLogin } from "./LoginContext";
 
 const OpenTradeContext = React.createContext();
 export function useOpenTrade() {
@@ -9,6 +10,7 @@ export function useOpenTrade() {
 }
 
 export function OpenTradeProvider({ children }) {
+    const { state: { depot } } = useLogin();
     const [state, dispatch] = React.useReducer(opentrade_reducer,
         {
             initalTrades: [],
@@ -35,7 +37,8 @@ export function OpenTradeProvider({ children }) {
                 data: {
                     aktie: selectedOption,
                     status: status.data,
-                    description: JSON.stringify(editorState)
+                    description: JSON.stringify(editorState),
+                    depot: depot
                 }
             });
             console.log("Ausgabe der Response: ", res);

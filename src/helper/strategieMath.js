@@ -20,10 +20,15 @@ function gewinnFn(stueckZahl, input, position) {
     return { gewinnEuro: Number.parseFloat(gewinn.toFixed(2)), gewinnProzent: Number.parseFloat(gewinnProzent.toFixed(2)) };
 }
 
+function positionFn(risikoProTradeInEuro, verlustInProzent) {
+    let position = risikoProTradeInEuro / (verlustInProzent / 100);
+    return Number.parseFloat(position.toFixed(2))
+}
+
 export function calculations({ depot, input }) {
     let risikoProTradeInEuro = depot.einlagen * depot.risiko_per_trade / 100;
     let verlustInProzent = verlustInProzentFn(input);
-    let position = risikoProTradeInEuro / (verlustInProzent / 100);
+    let position = positionFn(risikoProTradeInEuro, verlustInProzent);
     let gUV = gUVFn(input);
     let stueckZahl = stueckZahlFn(position, input);
     let gewinn = gewinnFn(stueckZahl, input, position);

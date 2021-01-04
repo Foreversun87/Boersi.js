@@ -1,4 +1,5 @@
 import React from "react";
+import MainGoMarketTrades from "./MainGoMarketTrades";
 import MainOpenTrades from "./MainOpenTrades";
 import MainStrategieTrades from "./MainStrategieTrades";
 
@@ -7,9 +8,7 @@ export default function Main() {
         <div className="main">
             <MainOpenTrades />
             <MainStrategieTrades />
-            <div className="main-content">
-                Main-Content
-            </div>
+            <MainGoMarketTrades />
         </div>
     )
 }

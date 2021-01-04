@@ -1,44 +1,48 @@
 import React from 'react';
 import { useSearchbar } from "./context/SearchbarContext";
 import { useOpenTrade } from "./context/OpenTradeContext";
-import Loader from './components/Loader';
-import { useStrategieTrade } from './context/StrategieTradeContext';
+import { useClosedTrade } from './context/ClosedTradeContext';
 import { useGoMarketTrade } from "./context/GoMarketTradeContext";
+import { formatDate} from "./helper/formatDate";
+import Loader from './components/Loader';
 import { ACTION } from "./reducer/action";
 
-export default function MainStrategieTrades() {
-    const { state: { loading }, dispatch, deleteTrade } = useOpenTrade();
-    const { strategieTrades } = useSearchbar();
-    const { dispatch_strategie, showModalStrategieNewTrade } = useStrategieTrade();
-    const { showModalGoMarketOnVista, dispatch_gomarket } = useGoMarketTrade();
+
+export default function MainGoMarketTrades() {
+    const { state: { loading }, deleteTrade } = useOpenTrade();
+    const { goMarketTrades } = useSearchbar();
+    const { dispatch_gomarket, showModalGoMarketNewTrade } = useGoMarketTrade();
+    const { dispatch_closed, showModalClosedNewTrade } = useClosedTrade()
 
     function onChangeOption(evt, trade) {
+        if (evt.target.value === "CLOSED") {
+            dispatch_closed({ type: ACTION.SETCLOSEDTRADE, payload: trade });
+            showModalClosedNewTrade();
+        }
+
+        if (evt.target.value === "BEARBEITEN") {
+            dispatch_gomarket({ type: ACTION.SETGOMARKETTRADE, payload: trade })
+            showModalGoMarketNewTrade();
+        }
+
         if (evt.target.value === "LÖSCHEN") {
             deleteTrade(trade.id);
         }
 
-        if (evt.target.value === "BEARBEITEN") {
-            dispatch_strategie({ type: ACTION.SETSTRATEGIETRADE, payload: trade })
-            showModalStrategieNewTrade();
-        }
-        if (evt.target.value === "HANDELN") {
-            dispatch_gomarket({ type: ACTION.SETGOMARKETTRADE, payload: trade })
-            showModalGoMarketOnVista();
-        }
     }
 
     return (
-        <div className="main-strategie">
+        <div className="main-content">
             <div className="main-opentrades-header">
-                Strategie der Trades
+                Gehandelte Trades
             </div>
-            {strategieTrades.length > 0
+            {goMarketTrades.length > 0
                 ?
                 <div className="main-opentrades-content">
-                    {strategieTrades.map((trade, i) =>
+                    {goMarketTrades.map((trade, i) =>
                         <div key={i} className="main-opentrades-content-trade">
                             <div className="main-opentrades-content-trade-text">
-                                {trade.id}: {trade.aktie.label} EK: {trade.einkaufskurs}€
+                                {` ${trade.id}: ${trade.aktie.label} Trailing-Stopp: ${formatDate(trade.trailing_stop_datum)}`}
                             </div>
                             <select
                                 value=""
@@ -49,7 +53,7 @@ export default function MainStrategieTrades() {
                             >
                                 <option value=""  > </option>
                                 <option value="BEARBEITEN">Trade bearbeiten </option>
-                                <option value="HANDELN" >Setze auf Handel</option>
+                                <option value="CLOSED" >Setze auf Closed</option>
                                 <option value="LÖSCHEN">Löschen</option>
                             </select>
                         </div>
@@ -57,7 +61,7 @@ export default function MainStrategieTrades() {
                 </div>
                 : loading
                     ? <Loader />
-                    : <div>Keine Trades im Strategiestatus!!!</div>}
+                    : <div>Keine aktiv gehandelten Trades!!!</div>}
         </div>
     )
 }

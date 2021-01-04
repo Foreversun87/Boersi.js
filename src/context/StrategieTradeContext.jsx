@@ -22,34 +22,49 @@ export function StrategieTradeProvider({ children }) {
         dispatch_strategie({ type: ACTION.TOGGLEMODALSTRATEGIETRADE })
     }
 
-    async function updateTrade(editorState, strategieTrade, input) {
-        try {
-            let status = await axios.get("http://localhost:1337/statuses/2");
-            console.log(status);
-            let res = await axios({
-                method: "PUT",
-                url: `http://localhost:1337/trade/${strategieTrade.id}`,
-                data: {
-                    description: JSON.stringify(editorState),
-                    status: status.data,
-                    einkaufskurs: input.einkaufskurs,
-                    stoppkurs: input.stoppkurs,
-                    zielkurs: input.zielkurs,
+    async function updateTrade(editorState, strategieTrade, input, calc, trailingDate) {
+        if (strategieTrade.status.id === 3) {
+            try {
+                let status = await axios.get("http://localhost:1337/statuses/3");
+                let res = await axios({
+                    method: "PUT",
+                    url: `http://localhost:1337/trades/${strategieTrade.id}`,
+                    data: {
+                        description: JSON.stringify(editorState),
+                        status: status.data,
+                        einkaufskurs: input.einkaufskurs,
+                        stoppkurs: input.stoppkurs,
+                        zielkurs: input.zielkurs,
+                        stueckzahl: calc.stueckZahl === Infinity ? 0 : calc.stueckZahl,
+                        trailing_stop_datum: new Date(trailingDate)
+                    }
+                });
 
-                }
-            });
-            dispatch({ type: ACTION.UPDATETRADE, payload: res.data });
-        } catch (error) {
-            alert("Fehler beim StrategieUpdate: Statusabfrage")
-        } finally {
-            alert("finally in StrategieTradeContext")
-            showModalStrategieNewTrade();
-            dispatch_strategie({
-                type: ACTION.SETSTRATEGIETRADE, payload: null
-            });
+                dispatch({ type: ACTION.UPDATETRADE, payload: res.data });
+            } catch (error) {
+                alert("Fehler beim StrategieUpdate: Statusabfrage")
+            }
+        } else {
+            try {
+                let status = await axios.get("http://localhost:1337/statuses/2");
+                let res = await axios({
+                    method: "PUT",
+                    url: `http://localhost:1337/trades/${strategieTrade.id}`,
+                    data: {
+                        description: JSON.stringify(editorState),
+                        status: status.data,
+                        einkaufskurs: input.einkaufskurs,
+                        stoppkurs: input.stoppkurs,
+                        zielkurs: input.zielkurs,
+                        stueckzahl: calc.stueckZahl === Infinity ? 0 : calc.stueckZahl
+                    }
+                });
+
+                dispatch({ type: ACTION.UPDATETRADE, payload: res.data });
+            } catch (error) {
+                alert("Fehler beim StrategieUpdate: Statusabfrage")
+            }
         }
-
-
 
     }
 
