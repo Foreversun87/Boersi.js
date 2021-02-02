@@ -2,14 +2,15 @@ import React from 'react';
 import Modal from "react-modal";
 import { ModalClosedTradeStyles } from "../modal-style";
 import { ACTION } from '../../../reducer/action';
-import { useGoMarketTrade } from '../../../context/GoMarketTradeContext';
+import { useLogin } from '../../../context/LoginContext';
 import { useClosedTrade } from '../../../context/ClosedTradeContext';
 
 Modal.setAppElement("#root");
 
 export default function ModalClosedTrade() {
+    const { state: { depot } } = useLogin();
     const [input, setInput] = React.useState("");
-    const { state: { isClosedTrade, closedTrade }, showModalClosedNewTrade, dispatch_closed, closedTradeFn } = useClosedTrade();
+    const { state: { isClosedTrade, closedTrade }, showModalClosedNewTrade, dispatch_closed, closedTradeFn, changeDepotIncome } = useClosedTrade();
 
     function cancel() {
         showModalClosedNewTrade();
@@ -19,7 +20,8 @@ export default function ModalClosedTrade() {
 
     function onSubmit(event, closedTrade, input) {
         event.preventDefault();
-        closedTradeFn(closedTrade, input)
+        closedTradeFn(closedTrade, input);
+        changeDepotIncome(depot, closedTrade, input);
         cancel();
     }
 
@@ -30,7 +32,7 @@ export default function ModalClosedTrade() {
                 <hr></hr>
                 <form onSubmit={(event) => onSubmit(event, closedTrade, input)}>
                     <div>
-                        <input type="number" required onChange={(e) => setInput(e.target.value)} value={input} step="0.01"  /><span>Verkaufskurs</span>
+                        <input type="number" required onChange={(e) => setInput(e.target.value)} value={input} step="0.01" /><span>Verkaufskurs</span>
                     </div>
                     <button >OK</button>
                     <button onClick={() => cancel()}>Abbrechen</button>

@@ -10,11 +10,11 @@ export function useOpenTrade() {
 }
 
 export function OpenTradeProvider({ children }) {
-    const { state: { depot } } = useLogin();
+    const { state: { depot, jwt } } = useLogin();
+    console.log(jwt);
     const [state, dispatch] = React.useReducer(opentrade_reducer,
         {
             initalTrades: [],
-            isSidebarShow: false,
             isCreatedTrade: false,
             getUpdateTrade: null,
             loading: true,
@@ -23,15 +23,29 @@ export function OpenTradeProvider({ children }) {
     );
 
     function deleteTrade(id) {
-        axios.delete("http://localhost:1337/trades/" + id)
+        axios.delete("http://localhost:1337/trades/" + id, {
+            headers: {
+                Authorization:
+                    `Bearer ${jwt.jwt}`
+            },
+        })
             .then(dispatch({ type: ACTION.DELETETRADE, payload: id }))
             .catch(err => alert("Fehler beim Löschen"));
     }
 
     async function createTrade({ selectedOption, editorState }) {
         try {
-            let status = await axios.get("http://localhost:1337/statuses/1");
+            let status = await axios.get("http://localhost:1337/statuses/1", {
+                headers: {
+                    Authorization:
+                        `Bearer ${jwt.jwt}`
+                },
+            });
             let res = await axios({
+                headers: {
+                    Authorization:
+                        `Bearer ${jwt.jwt}`
+                },
                 method: "POST",
                 url: "http://localhost:1337/trades/",
                 data: {
@@ -61,6 +75,10 @@ export function OpenTradeProvider({ children }) {
 
     function updateTrade(editorState, getUpdateTrade) {
         axios({
+            headers: {
+                Authorization:
+                    `Bearer ${jwt.jwt}`
+            },
             method: "PUT",
             url: `http://localhost:1337/trades/${getUpdateTrade.id}`,
             data: {
@@ -82,10 +100,22 @@ export function OpenTradeProvider({ children }) {
     }
 
     React.useEffect(() => {
-        function getData() {
-            axios.get("http://localhost:1337/trades")
-                .then(res => dispatch({ type: ACTION.FETCH_SUCCESS, payload: res.data }))
-                .catch(err => alert("Probleme beim Laden der Trades"));
+        async function getData() {
+            try {
+                let { data } = await axios.get("http://localhost:1337/trades", {
+                    headers: {
+                        Authorization:
+                            `Bearer ${jwt.jwt}`
+                    }
+                });
+                let filterdData = data.filter(trade => trade.depot.id === depot.id);
+                console.log(filterdData);
+                dispatch({ type: ACTION.FETCH_SUCCESS, payload: filterdData });
+
+            } catch (error) {
+                console.log(error);
+                alert("Probleme beim Laden der Trades");
+            }
         }
         getData();
     }, [state.isCreatedTrade])

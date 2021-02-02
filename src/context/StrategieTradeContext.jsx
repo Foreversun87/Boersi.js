@@ -1,7 +1,8 @@
 import React from "react";
 import { ACTION } from "../reducer/action";
 import { strategietrade_reducer } from "../reducer/strategietrade/strategietrade_reducer";
-import { useOpenTrade } from "../context/OpenTradeContext";
+import { useOpenTrade } from "./../context/OpenTradeContext";
+import { useLogin } from "./LoginContext";
 import axios from "axios";
 
 const StrategieTradeContext = React.createContext();
@@ -10,6 +11,7 @@ export function useStrategieTrade() {
 }
 
 export function StrategieTradeProvider({ children }) {
+    const { state: { jwt } } = useLogin();
     const { dispatch } = useOpenTrade();
     const [state, dispatch_strategie] = React.useReducer(strategietrade_reducer,
         {
@@ -25,8 +27,17 @@ export function StrategieTradeProvider({ children }) {
     async function updateTrade(editorState, strategieTrade, input, calc, trailingDate) {
         if (strategieTrade.status.id === 3) {
             try {
-                let status = await axios.get("http://localhost:1337/statuses/3");
+                let status = await axios.get("http://localhost:1337/statuses/3", {
+                    headers: {
+                        Authorization:
+                            `Bearer ${jwt.jwt}`
+                    }
+                });
                 let res = await axios({
+                    headers: {
+                        Authorization:
+                            `Bearer ${jwt.jwt}`
+                    },
                     method: "PUT",
                     url: `http://localhost:1337/trades/${strategieTrade.id}`,
                     data: {
@@ -46,8 +57,17 @@ export function StrategieTradeProvider({ children }) {
             }
         } else {
             try {
-                let status = await axios.get("http://localhost:1337/statuses/2");
+                let status = await axios.get("http://localhost:1337/statuses/2", {
+                    headers: {
+                        Authorization:
+                            `Bearer ${jwt.jwt}`
+                    }
+                });
                 let res = await axios({
+                    headers: {
+                        Authorization:
+                            `Bearer ${jwt.jwt}`
+                    },
                     method: "PUT",
                     url: `http://localhost:1337/trades/${strategieTrade.id}`,
                     data: {

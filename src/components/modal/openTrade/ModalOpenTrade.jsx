@@ -5,7 +5,8 @@ import OpenSelect from '../OpenSelect';
 import axios from "axios";
 import WYSIWYG from "../../WYSIWYG";
 import { ACTION } from '../../../reducer/action';
-import {customStyles} from "../modal-style";
+import { customStyles } from "../modal-style";
+import { useLogin } from "./../../../context/LoginContext";
 
 // https://github.com/JedWatson/react-select
 // https://react-select.com/home#getting-started
@@ -20,6 +21,7 @@ import {customStyles} from "../modal-style";
 // 1.4 modalOpentradeInput wird belegt?
 
 export default function ModalOpenTrade() {
+    const { state: { jwt } } = useLogin();
     const { state: { isCreatedTrade, getUpdateTrade }, dispatch, createTrade, updateTrade, showModalCreatedNewTrade } = useOpenTrade();
     const [editorState, setEditorState] = React.useState(null);
     const [selectedOption, setSelectedOption] = React.useState("");
@@ -36,7 +38,12 @@ export default function ModalOpenTrade() {
     // Laden der Aktiendaten für Selectauswahl
     React.useEffect(async () => {
         try {
-            let stocks = await axios.get("http://localhost:1337/akties");
+            let stocks = await axios.get("http://localhost:1337/akties", {
+                headers: {
+                    Authorization:
+                        `Bearer ${jwt.jwt}`
+                }
+            });
             setStocks(stocks.data);
         } catch (err) {
             alert("Fehler beim Laden der Aktien");

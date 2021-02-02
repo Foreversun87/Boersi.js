@@ -1,11 +1,11 @@
 import React from 'react';
-import { useSearchbar } from "./context/SearchbarContext";
-import { useOpenTrade } from "./context/OpenTradeContext";
-import { useClosedTrade } from './context/ClosedTradeContext';
-import { useGoMarketTrade } from "./context/GoMarketTradeContext";
-import { formatDate} from "./helper/formatDate";
-import Loader from './components/Loader';
-import { ACTION } from "./reducer/action";
+import { useSearchbar } from "../../../context/SearchbarContext";
+import { useOpenTrade } from "../../../context/OpenTradeContext";
+import { useClosedTrade } from '../../../context/ClosedTradeContext';
+import { useGoMarketTrade } from "../../../context/GoMarketTradeContext";
+import { formatDate} from "../../../helper/formatDate";
+import Loader from '../../../components/Loader';
+import { ACTION } from "../../../reducer/action";
 
 
 export default function MainGoMarketTrades() {
@@ -42,7 +42,14 @@ export default function MainGoMarketTrades() {
                     {goMarketTrades.map((trade, i) =>
                         <div key={i} className="main-opentrades-content-trade">
                             <div className="main-opentrades-content-trade-text">
-                                {` ${trade.id}: ${trade.aktie.label} Trailing-Stopp: ${formatDate(trade.trailing_stop_datum)}`}
+                                {` 
+                                ${trade.id}: ${trade.aktie.label} 
+                                Trailing-Stopp: ${formatDate(trade.trailing_stop_datum)}
+                                
+                                Zielkurs: ${trade.zielkurs}€
+                                
+                                Stoppkurs: ${trade.stoppkurs}€
+                                `}
                             </div>
                             <select
                                 value=""

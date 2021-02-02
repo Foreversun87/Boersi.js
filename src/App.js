@@ -1,29 +1,29 @@
 import React from "react";
-import Main from "./Main";
-import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
-import { useOpenTrade } from "./context/OpenTradeContext";
-import ModalCreatedTrade from "./components/modal/openTrade/ModalOpenTrade";
-import ModalStrategieTrade from "./components/modal/strategieTrade/ModalStrategieTrade";
-import ModalGoMarketTrade from "./components/modal/gomarketTrade/ModalGoMarket";
+import { Route, Switch } from "react-router-dom";
+import PrivateRoute from "./components/PrivateRoute";
 
-import ModalGoMarketOnVista from "./components/modal/gomarketTrade/ModalGoMarketOnVista";
-import ModalClosedTrade from "./components/modal/closedTrade/ModalClosedTrade";
+// import MainPage from "./pages/main/MainPage";
+// import LoginPage from "./pages/login/Login";
+// import ViewPage from "./pages/view/ViewPage";
 
+const MainPage = React.lazy(() => import("./pages/main/MainPage"));
+const LoginPage = React.lazy(() => import("./pages/login/Login"));
+const ViewPage = React.lazy(() => import("./pages/view/ViewPage"));
 
 function App() {
-  const { state: { isSidebarShow } } = useOpenTrade();
   return (
-    <div className="grid-container" >
-      <ModalGoMarketOnVista />
-      <ModalCreatedTrade />
-      <ModalStrategieTrade />
-      <ModalGoMarketTrade />
-      <ModalClosedTrade />
-      {isSidebarShow && <Sidebar />}
-      <Navbar />
-      <Main />
-    </div>
+    <React.Suspense fallback={<div>...Loading</div>}>
+      <Switch>
+        <PrivateRoute exact path="/main"  >
+          <MainPage />
+        </PrivateRoute>
+        {/* <Route exact path="/main" render={(routeProps) => <MainPage {...routeProps} />} /> */}
+        <PrivateRoute exact path="/view">
+          <ViewPage />
+        </PrivateRoute>
+        <Route path="/" render={() => <LoginPage />} />
+      </Switch>
+    </React.Suspense>
   );
 }
 

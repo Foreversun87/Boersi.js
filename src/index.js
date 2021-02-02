@@ -1,32 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter } from "react-router-dom";
+import LoginProvider from "./context/LoginContext";
 import App from './App';
-import "./style.css";
-import { OpenTradeProvider } from "./context/OpenTradeContext";
-import { StrategieTradeProvider } from "./context/StrategieTradeContext";
-import { GoMarketTradeProvider } from "./context/GoMarketTradeContext";
-import { LoginProvider } from "./context/LoginContext";
-import { ClosedTradeProvider } from './context/ClosedTradeContext';
-import { SearchbarProvider } from "./context/SearchbarContext";
+
+import "./index.css";
+import "./pages/main/main.css";
 
 ReactDOM.render(
-  <LoginProvider>
-    <OpenTradeProvider>
-      <StrategieTradeProvider>
-        <GoMarketTradeProvider>
-          <ClosedTradeProvider>
-            <SearchbarProvider>
-              <App />
-            </SearchbarProvider>
-          </ClosedTradeProvider>
-        </GoMarketTradeProvider>
-      </StrategieTradeProvider>
-    </OpenTradeProvider>
-  </LoginProvider>
-  ,
-  document.getElementById('root')
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+    <BrowserRouter>
+        <LoginProvider>
+            <App />
+        </LoginProvider>
+    </BrowserRouter>
+    , document.getElementById('root'));

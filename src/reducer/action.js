@@ -10,7 +10,7 @@ export const ACTION = {
     FETCH_ERROR: "FETCH_ERROR",
     FETCH_SUCCESS: "FETCH_SUCCESS",
     // Actions für OpenTrade
-    
+
     // Actions für StrategieTrade
     TOGGLEMODALSTRATEGIETRADE: "TOGGLEMODALSTRATEGIETRADE",
     SETSTRATEGIETRADE: "SETSTRATEGIETRADE",
@@ -26,6 +26,8 @@ export const ACTION = {
 
     // Actions für Login
     SETDEPOT: "SETDEPOT",
-    SETLOGIN: "SETLOGIN",
+    SETJWT: "SETJWT",
     TOGGLELOGIN: "TOGGLELOGIN",
+    SETERROR: "SETERROR",
+    SETUSER: "SETUSER",
 }

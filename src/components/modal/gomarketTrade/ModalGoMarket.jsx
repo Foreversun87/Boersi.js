@@ -7,6 +7,7 @@ import { useLogin } from '../../../context/LoginContext';
 import { ACTION } from '../../../reducer/action';
 import { calculations } from "../../../helper/strategieMath";
 import { useGoMarketTrade } from '../../../context/GoMarketTradeContext';
+import { isBefore } from '../../../helper/formatDate';
 
 Modal.setAppElement("#root");
 
@@ -54,11 +55,13 @@ export default function ModalGoMarketTrade() {
     // Wenn ich OK klicke, passiert diese Funktion
     function onSubmit(event, goMarketTrade, input, calc, trailingDate) {
         event.preventDefault();
-        if (input.einkaufskurs === "" || input.stoppkurs === "" || input.zielkurs === "") {
+        if (input.einkaufskurs === "" || input.stoppkurs === "" || input.zielkurs === "" || isBefore(trailingDate)) {
             if (input.stoppkurs === "") {
                 alert("Bitte einen Stoppkurs eingeben");
             } else if (input.zielkurs === "") {
                 alert("Bitte einen Zielkurs eingeben");
+            } else if (isBefore(trailingDate)) {
+                alert("Bitte ein zukünftiges Datum eintragen");
             }
         } else {
             try {

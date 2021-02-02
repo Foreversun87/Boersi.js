@@ -12,11 +12,10 @@ Modal.setAppElement("#root");
 
 export default function ModalStrategieTrade() {
     const [editorState, setEditorState] = React.useState(null);
-    const { state: { depot }, dispatch_login } = useLogin();
+    const { state: { depot, user } } = useLogin();
     const { state: { isStrategieTrade, strategieTrade }, updateTrade, showModalStrategieNewTrade, dispatch_strategie } = useStrategieTrade();
     const [input, setInput] = React.useState({ einkaufskurs: "", stoppkurs: "", zielkurs: "" });
     const [calc, setCalc] = React.useState(null)
-
 
     React.useEffect(() => {
         if (strategieTrade) {
@@ -47,13 +46,16 @@ export default function ModalStrategieTrade() {
     // Wenn ich OK klicke, passiert diese Funktion
     function onSubmit(event, strategieTrade, input, calc) {
         event.preventDefault();
-        if (input.einkaufskurs === "" || input.stoppkurs === "" || input.zielkurs === "") {
+        console.log(calc.gUV)
+        if (input.einkaufskurs === "" || input.stoppkurs === "" || input.zielkurs === "" || calc.gUV < 1) {
             if (input.einkaufskurs === "") {
                 alert("Bitte einen Einkaufskurs eingeben");
             } else if (input.stoppkurs === "") {
                 alert("Bitte einen Stoppkurs eingeben");
             } else if (input.zielkurs === "") {
                 alert("Bitte einen Zielkurs eingeben");
+            } else if (calc.gUV < 1) {
+                alert("Achtung!!! GuV ist unter 1");
             }
         } else {
             try {
@@ -96,15 +98,20 @@ export default function ModalStrategieTrade() {
                     </span >
                     <span style={{ flex: 1 }}>
                         <div><b>Risiko in €</b></div>
-                        <div>{depot ? depot.einlagen * depot.risiko_per_trade / 100 + "€" : "-"}</div>
+                        <div>{calc ? calc.risikoProTradeInEuro + "€" : "-"}</div>
                     </span>
                     <span style={{ flex: 1 }}>
                         <div><b>Depotwert</b></div>
-                        <div>{depot ? depot.einlagen + "€" : "-"}</div>
+                        <div>
+                            {depot
+                                ? Number.parseFloat(depot.einlagen.toFixed(2)) + "€"
+                                : "-"
+                            }
+                        </div>
                     </span>
                     <span>
                         <div><b>Inhaber</b></div>
-                        <div>{depot ? depot.users_permissions_user.email : "-"}</div>
+                        <div>{user ? user.email : "-"}</div>
                     </span>
                 </div>
                 <div style={{ height: "70%", maxHeight: "70%" }}>

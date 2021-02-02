@@ -1,0 +1,28 @@
+/* 
+        Rooteinstellungen
+*/
+
+:root {
+    --background-white: #f3f3f3;
+    --background-dark: black;
+    --background-dark-font: white;
+    --background-trade: white;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font: 62.5% helvetica, arial
+}
+
+body {
+    height: 100vh;
+    margin: 0;
+    font-size: 1.6rem;
+}
+
+#root {
+    height: 100%;
+}

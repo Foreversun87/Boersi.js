@@ -4,8 +4,11 @@ function verlustInProzentFn(input) {
     return Number.parseFloat(wert.toFixed(2));
 }
 
-function gUVFn(input) {
-    let gUV = (input.zielkurs - input.einkaufskurs) / (input.einkaufskurs - input.stoppkurs);
+function gUVFn(input, risikoProTradeInEuro, gewinn) {
+    // console.log(risikoProTradeInEuro, gewinn.gewinnEuro);
+    // let gUV = (input.zielkurs - input.einkaufskurs) / (input.einkaufskurs - input.stoppkurs);
+    let gUV = gewinn.gewinnEuro / risikoProTradeInEuro;
+
     return Number.parseFloat(gUV.toFixed(2));
 }
 
@@ -25,13 +28,39 @@ function positionFn(risikoProTradeInEuro, verlustInProzent) {
     return Number.parseFloat(position.toFixed(2))
 }
 
-export function calculations({ depot, input }) {
-    let risikoProTradeInEuro = depot.einlagen * depot.risiko_per_trade / 100;
-    let verlustInProzent = verlustInProzentFn(input);
-    let position = positionFn(risikoProTradeInEuro, verlustInProzent);
-    let gUV = gUVFn(input);
-    let stueckZahl = stueckZahlFn(position, input);
-    let gewinn = gewinnFn(stueckZahl, input, position);
-    return { risikoProTradeInEuro, verlustInProzent, position, gUV, stueckZahl, gewinn }
+function risikoProTradeInEuroFn(depot) {
+    let proTrade = depot.einlagen * depot.risiko_per_trade / 100;
+    return Number.parseFloat(proTrade.toFixed(2));
 }
 
+function realGewinnFn( stueckzahl, input ) {
+    let realGewinn = stueckzahl * input.verkaufskurs - stueckzahl * input.einkaufskurs;
+    return Number.parseFloat(realGewinn.toFixed(2));
+}
+
+// input = {einkaufskurs: "", stoppkurs: "", zielkurs: ""}
+// depot = Komplettes Depot aus Backend
+export function calculations({ depot, input }) {
+    let risikoProTradeInEuro = risikoProTradeInEuroFn(depot);
+    let verlustInProzent = verlustInProzentFn(input);
+    let position = positionFn(risikoProTradeInEuro, verlustInProzent);
+    let stueckZahl = stueckZahlFn(position, input);
+    // Voraussichtlicher Gewinn-Objekt {gewinnEuro, gewinnProzent }
+    let realGewinn = realGewinnFn(stueckZahl, input);
+    let gewinn = gewinnFn(stueckZahl, input, position);
+    let gUV = gUVFn(input, risikoProTradeInEuro, gewinn);
+    return { risikoProTradeInEuro, verlustInProzent, position, gUV, realGewinn, stueckZahl, gewinn }
+}
+
+function realGewinnViewFn({ stueckzahl, input }) {
+    console.log(stueckzahl, input);
+    let realGewinn = stueckzahl * input.verkaufskurs - stueckzahl * input.einkaufskurs;
+    return Number.parseFloat(realGewinn.toFixed(2));
+}
+
+export function calculationsView(stueckzahl, input) {
+    let realGewinn = realGewinnViewFn(stueckzahl, input);
+    return {
+        realGewinn: realGewinn,
+    }
+}

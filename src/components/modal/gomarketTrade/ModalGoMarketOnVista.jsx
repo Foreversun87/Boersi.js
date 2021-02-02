@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import { ModalGoMarketOnVistaStyles } from "../modal-style";
 import { ACTION } from '../../../reducer/action';
 import { useGoMarketTrade } from '../../../context/GoMarketTradeContext';
+import { isBefore } from "./../../../helper/formatDate";
 
 Modal.setAppElement("#root");
 
@@ -18,7 +19,10 @@ export default function ModalGoMarketOnVista() {
 
     function onSubmit(event, goMarketTrade, trailingDate) {
         event.preventDefault();
-        goMarketOnVista(goMarketTrade, trailingDate);
+
+        isBefore(trailingDate)
+            ? alert("Bitte ein zukünftiges Datum eintragen")
+            : goMarketOnVista(goMarketTrade, trailingDate);
         cancel();
     }
 

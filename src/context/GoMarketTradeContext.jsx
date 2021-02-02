@@ -2,7 +2,9 @@ import React from "react";
 import { ACTION } from "../reducer/action";
 import { gomarkettrade_reducer } from "../reducer/gomarket/gomarkettrade_reducer";
 import { useOpenTrade } from "../context/OpenTradeContext";
+import { useLogin } from "./LoginContext";
 import axios from "axios";
+
 
 const GoMarketTradeContext = React.createContext();
 export function useGoMarketTrade() {
@@ -10,6 +12,7 @@ export function useGoMarketTrade() {
 }
 
 export function GoMarketTradeProvider({ children }) {
+    const { state: { jwt } } = useLogin();
     const { dispatch } = useOpenTrade();
     const [state, dispatch_gomarket] = React.useReducer(gomarkettrade_reducer,
         {
@@ -29,9 +32,18 @@ export function GoMarketTradeProvider({ children }) {
 
     async function updateTrade(editorState, strategieTrade, input) {
         try {
-            let status = await axios.get("http://localhost:1337/statuses/3");
+            let status = await axios.get("http://localhost:1337/statuses/3", {
+                headers: {
+                    Authorization:
+                        `Bearer ${jwt.jwt}`
+                }
+            });
             console.log(status);
             let res = await axios({
+                headers: {
+                    Authorization:
+                        `Bearer ${jwt.jwt}`
+                },
                 method: "PUT",
                 url: `http://localhost:1337/trades/${strategieTrade.id}`,
                 data: {
@@ -50,8 +62,17 @@ export function GoMarketTradeProvider({ children }) {
 
     async function goMarketOnVista(gomarketTrade, trailingDate) {
         try {
-            let status = await axios.get("http://localhost:1337/statuses/3");
+            let status = await axios.get("http://localhost:1337/statuses/3", {
+                headers: {
+                    Authorization:
+                        `Bearer ${jwt.jwt}`
+                }
+            });
             let res = await axios({
+                headers: {
+                    Authorization:
+                        `Bearer ${jwt.jwt}`
+                },
                 method: "PUT",
                 url: `http://localhost:1337/trades/${gomarketTrade.id}`,
                 data: {

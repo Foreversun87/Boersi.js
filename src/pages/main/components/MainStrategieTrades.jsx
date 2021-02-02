@@ -1,10 +1,10 @@
 import React from 'react';
-import { useSearchbar } from "./context/SearchbarContext";
-import { useOpenTrade } from "./context/OpenTradeContext";
-import Loader from './components/Loader';
-import { useStrategieTrade } from './context/StrategieTradeContext';
-import { useGoMarketTrade } from "./context/GoMarketTradeContext";
-import { ACTION } from "./reducer/action";
+import { useSearchbar } from "./../../../context/SearchbarContext";
+import { useOpenTrade } from "./../../../context/OpenTradeContext";
+import Loader from './../../../components/Loader';
+import { useStrategieTrade } from './../../../context/StrategieTradeContext';
+import { useGoMarketTrade } from "./../../../context/GoMarketTradeContext";
+import { ACTION } from "./../../../reducer/action";
 
 export default function MainStrategieTrades() {
     const { state: { loading }, dispatch, deleteTrade } = useOpenTrade();
