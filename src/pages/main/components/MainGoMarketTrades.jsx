@@ -1,33 +1,13 @@
 import React from 'react';
-import { useSearchbar } from "../../../context/SearchbarContext";
-import { useOpenTrade } from "../../../context/OpenTradeContext";
-import { useClosedTrade } from '../../../context/ClosedTradeContext';
-import { useGoMarketTrade } from "../../../context/GoMarketTradeContext";
-import { formatDate} from "../../../helper/formatDate";
 import Loader from '../../../components/Loader';
-import { ACTION } from "../../../reducer/action";
 
 
 export default function MainGoMarketTrades() {
-    const { state: { loading }, deleteTrade } = useOpenTrade();
-    const { goMarketTrades } = useSearchbar();
-    const { dispatch_gomarket, showModalGoMarketNewTrade } = useGoMarketTrade();
-    const { dispatch_closed, showModalClosedNewTrade } = useClosedTrade()
+    const [goMarketTrades, setGoMarketTrades] = React.useState([]);
+    const [loading, setLoading] = React.useState(false);
 
     function onChangeOption(evt, trade) {
-        if (evt.target.value === "CLOSED") {
-            dispatch_closed({ type: ACTION.SETCLOSEDTRADE, payload: trade });
-            showModalClosedNewTrade();
-        }
-
-        if (evt.target.value === "BEARBEITEN") {
-            dispatch_gomarket({ type: ACTION.SETGOMARKETTRADE, payload: trade })
-            showModalGoMarketNewTrade();
-        }
-
-        if (evt.target.value === "LÖSCHEN") {
-            deleteTrade(trade.id);
-        }
+        
 
     }
 
@@ -44,7 +24,7 @@ export default function MainGoMarketTrades() {
                             <div className="main-opentrades-content-trade-text">
                                 {` 
                                 ${trade.id}: ${trade.aktie.label} 
-                                Trailing-Stopp: ${formatDate(trade.trailing_stop_datum)}
+                                
                                 
                                 Zielkurs: ${trade.zielkurs}€
                                 

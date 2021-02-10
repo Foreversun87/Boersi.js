@@ -1,34 +1,17 @@
 import React from 'react';
 import Loader from '../../../components/Loader';
-import { useOpenTrade } from "./../../../context/OpenTradeContext";
-import { useStrategieTrade } from "./../../../context/StrategieTradeContext";
-import { useSearchbar } from "./../../../context/SearchbarContext";
-import { ACTION } from "./../../../reducer/action";
-import { formatDate } from "./../../../helper/formatDate";
 
 export default function MainOpenTrades() {
-    const { state: { loading }, dispatch, deleteTrade, showModalCreatedNewTrade } = useOpenTrade();
-    const { showModalStrategieNewTrade, dispatch_strategie } = useStrategieTrade();
-    const { openTrades } = useSearchbar();
+    const [openTrades, setOpenTrades] = React.useState([]);
+    const [loading, setLoading] = React.useState(false);
+
     function onChangeOption(evt, trade) {
-        if (evt.target.value === "LÖSCHEN") {
-            deleteTrade(trade.id);
-        }
 
-        if (evt.target.value === "BEARBEITEN") {
-            dispatch({ type: ACTION.GETUPDATETRADE, payload: trade })
-            showModalCreatedNewTrade();
-        }
-
-        if (evt.target.value === "STRATEGIE") {
-            dispatch_strategie({ type: ACTION.SETSTRATEGIETRADE, payload: trade })
-            showModalStrategieNewTrade();
-        }
     }
 
     return (
         <div className="main-opentrades">
-            <div onClick={showModalCreatedNewTrade} className="main-opentrades-header">
+            <div className="main-opentrades-header">
                 Eröffne Trades
             </div>
             {openTrades.length > 0
@@ -38,14 +21,13 @@ export default function MainOpenTrades() {
                         openTrades.map((trade, i) =>
                             <div key={i} className="main-opentrades-content-trade">
                                 <div className="main-opentrades-content-trade-text">
-                                    {trade.id}: {trade.aktie.label} - {formatDate(trade.created_at)}
+
                                 </div>
                                 <select
                                     value=""
                                     name="123"
                                     id="status"
                                     className="main-opentrades-content-trade-select"
-                                    onChange={(evt) => onChangeOption(evt, trade)}
                                 >
                                     <option value=""  > </option>
                                     <option value="BEARBEITEN"  >Trade bearbeiten</option>

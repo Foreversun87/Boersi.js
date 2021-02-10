@@ -1,14 +1,17 @@
 import React from 'react';
-import { useLogin } from "./../../context/LoginContext";
 import "./login.css";
+import { withRouter, useHistory, useLocation, Redirect } from "react-router-dom";
 
-export default function Login() {
-    const { state: { error }, login } = useLogin();
+function Login() {
     const [input, setInput] = React.useState({ identifier: "", password: "" });
+    const history = useHistory();
+    
+
+    console.log(useLocation(), history);
 
     function onSubmit(e) {
         e.preventDefault();
-        login(input);
+        history.push("/main");
     }
 
     return (
@@ -18,14 +21,11 @@ export default function Login() {
                     Börsi
                 </div>
                 <form onSubmit={onSubmit} className="login-form">
-                    {error === 0 ? `Serverproblem` : error === 429 ? "Zu viele Fehlversuche" : error === 400 ? "Password or Email wrong" : null}
-                    <div className={error ? "login-form-error" : "login-form-success"}>
-                        <input value={input.identifier} name="identifier" onChange={(e) => setInput({ ...input, identifier: e.target.value })}
-                            className="login-input" placeholder="email" type="text" />
-                        <input value={input.password} name="password" onChange={(e) => setInput({ ...input, password: e.target.value })}
-                            className="login-input" placeholder="password" type="password" />
-                        <div className="login-link">Passwort vergessen?</div>
-                    </div>
+                    <input value={input.identifier} name="identifier" onChange={(e) => setInput({ ...input, identifier: e.target.value })}
+                        className="login-input" placeholder="email" type="text" />
+                    <input value={input.password} name="password" onChange={(e) => setInput({ ...input, password: e.target.value })}
+                        className="login-input" placeholder="password" type="password" />
+                    <div className="login-link">Passwort vergessen?</div>
                     <div className="login-button-container">
                         <span className="login-link">Neues Konto erstellen</span>
                         <button className="login-button">Anmelden</button>
@@ -35,3 +35,5 @@ export default function Login() {
         </div>
     )
 }
+
+export default withRouter(Login);

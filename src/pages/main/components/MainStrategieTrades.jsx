@@ -1,30 +1,13 @@
 import React from 'react';
-import { useSearchbar } from "./../../../context/SearchbarContext";
-import { useOpenTrade } from "./../../../context/OpenTradeContext";
-import Loader from './../../../components/Loader';
-import { useStrategieTrade } from './../../../context/StrategieTradeContext';
-import { useGoMarketTrade } from "./../../../context/GoMarketTradeContext";
-import { ACTION } from "./../../../reducer/action";
+import Loader from '../../../components/Loader';
 
 export default function MainStrategieTrades() {
-    const { state: { loading }, dispatch, deleteTrade } = useOpenTrade();
-    const { strategieTrades } = useSearchbar();
-    const { dispatch_strategie, showModalStrategieNewTrade } = useStrategieTrade();
-    const { showModalGoMarketOnVista, dispatch_gomarket } = useGoMarketTrade();
+
+    const [strategieTrades, setStrategieTrades] = React.useState([]);
+    const [loading, setLoading] = React.useState(false);
 
     function onChangeOption(evt, trade) {
-        if (evt.target.value === "LÖSCHEN") {
-            deleteTrade(trade.id);
-        }
 
-        if (evt.target.value === "BEARBEITEN") {
-            dispatch_strategie({ type: ACTION.SETSTRATEGIETRADE, payload: trade })
-            showModalStrategieNewTrade();
-        }
-        if (evt.target.value === "HANDELN") {
-            dispatch_gomarket({ type: ACTION.SETGOMARKETTRADE, payload: trade })
-            showModalGoMarketOnVista();
-        }
     }
 
     return (
